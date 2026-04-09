@@ -31,7 +31,6 @@ class KalmanFilter{
     void set_measurement_noise_cov(const Eigen::MatrixXd &R){
         R_ = R;
     }
-    
 
     void update(){
         //TODO ADD dynamically updating const velocity prediction model 
@@ -55,10 +54,10 @@ class KalmanFilter{
         P_ = (I_- K_*H_) * P_pri_;
     }
 
-    Eigen::VectorXd get_estimates(){
+    Eigen::VectorXd get_estimates() const{
         return x_;
     }
-    Eigen::VectorXd get_predictions(){
+    Eigen::VectorXd get_predictions() const {
         return x_pri_;
     }
 

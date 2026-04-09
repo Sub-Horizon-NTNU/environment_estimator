@@ -17,7 +17,7 @@ class EnvironmentVisualizer{
                     "selene/environment_estimator/usv_marker", 10);
 
         marker_timer_ = node_->create_wall_timer(
-            std::chrono::milliseconds(50),
+            std::chrono::milliseconds(10),
             std::bind(&EnvironmentVisualizer::publish_markers, this));
         
     }
@@ -25,6 +25,12 @@ class EnvironmentVisualizer{
 
     void publish_markers(){
     visualization_msgs::msg::MarkerArray marker_array;
+     // Clear all previous markers
+        visualization_msgs::msg::Marker delete_marker;
+        delete_marker.header.frame_id = "map";
+        delete_marker.header.stamp = node_->now();
+        delete_marker.action = visualization_msgs::msg::Marker::DELETEALL;
+        marker_array.markers.push_back(delete_marker);
 
     for(unsigned int i = 0; i < object_manager_->get_objects().size(); i++){
         visualization_msgs::msg::Marker marker;
@@ -55,16 +61,41 @@ class EnvironmentVisualizer{
         }
 
         marker_array.markers.push_back(marker);
+
+        object_msgs::msg::Object predicted = object_manager_->get_objects()[i].get_predicted_position();
+        visualization_msgs::msg::Marker predicted_marker;
+        predicted_marker.header.frame_id = "map";
+        predicted_marker.header.stamp = node_->now();
+        predicted_marker.id = i + 1000;
+        predicted_marker.type = visualization_msgs::msg::Marker::SPHERE;
+        predicted_marker.action = visualization_msgs::msg::Marker::ADD;
+
+        predicted_marker.pose.position.x = predicted.position_y;
+        predicted_marker.pose.position.y = predicted.position_x;
+        predicted_marker.pose.position.z = 0.0;
+
+        predicted_marker.scale.x = 0.3;
+        predicted_marker.scale.y = 0.3;
+        predicted_marker.scale.z = 0.3;
+
+        predicted_marker.color.a = 1.0;
+        predicted_marker.color.r = 1.0;
+        predicted_marker.color.g = 0.4;
+        predicted_marker.color.b = 0.7;
+
+        marker_array.markers.push_back(predicted_marker); 
     }
+    
     marker_publisher_->publish(marker_array);
     visualization_msgs::msg::Marker usv_marker;
     usv_marker.header.frame_id = "map";
     usv_marker.header.stamp = node_->now();
     usv_marker.id = 0;
-    usv_marker.type = visualization_msgs::msg::Marker::CYLINDER;
+    usv_marker.type = visualization_msgs::msg::Marker::CUBE;
     usv_marker.action = visualization_msgs::msg::Marker::ADD;
     usv_marker.color.a = 1.0;
     usv_marker.color.b = 1.0;
+    //usv_marker.pose.orientation = usv_states_->get_states().orientation;
 
     usv_marker.pose.position.x = usv_states_->get_states().y; // coordinate axis swapped
     usv_marker.pose.position.y = usv_states_->get_states().x;

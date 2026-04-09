@@ -25,6 +25,7 @@ add_executable(usv_environment_estimator src/main.cpp
   src/ObjectManager.cpp
   src/USVStates.cpp
   src/EnvironmentVisualizer.cpp
+  src/ObjectUtilities.cpp
 )
 
 target_include_directories(usv_environment_estimator PRIVATE include)
