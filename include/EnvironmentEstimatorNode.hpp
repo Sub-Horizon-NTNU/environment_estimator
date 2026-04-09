@@ -7,16 +7,9 @@
 
 class EnvironmentEstimatorNode : public rclcpp::Node {
 public:
-    EnvironmentEstimatorNode() : Node("environment_estimator")
-    {   
-             
-    }
+    EnvironmentEstimatorNode();
 
-    void init(){
-        usv_states_ = std::make_shared<USVStates>(this->shared_from_this());
-        object_manager_ = std::make_shared<ObjectManager>(this->shared_from_this(),usv_states_);
-        environment_visualizer_ = std::make_unique<EnvironmentVisualizer>(this->shared_from_this(),usv_states_,object_manager_);
-    }
+    void init();
     
 private:
     std::shared_ptr<USVStates> usv_states_;

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(usv_environment_estimator)
+project(environment_estimator)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -18,7 +18,7 @@ find_package(eigen3_cmake_module REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(visualization_msgs REQUIRED)
 
-add_executable(usv_environment_estimator src/main.cpp
+add_executable(environment_estimator src/main.cpp
   src/EnvironmentEstimatorNode.cpp
   src/KalmanFilter.cpp
   src/Object.cpp
@@ -28,8 +28,8 @@ add_executable(usv_environment_estimator src/main.cpp
   src/ObjectUtilities.cpp
 )
 
-target_include_directories(usv_environment_estimator PRIVATE include)
-ament_target_dependencies(usv_environment_estimator 
+target_include_directories(environment_estimator PRIVATE include)
+ament_target_dependencies(environment_estimator 
   rclcpp 
   object_msgs 
   nav_msgs 
@@ -40,7 +40,7 @@ ament_target_dependencies(usv_environment_estimator
   visualization_msgs
 )
 
-install(TARGETS usv_environment_estimator
+install(TARGETS environment_estimator
 DESTINATION lib/${PROJECT_NAME}
 )
 
