@@ -22,5 +22,7 @@ class EnvironmentVisualizer{
     rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr usv_marker_publisher_;
 
     rclcpp::TimerBase::SharedPtr marker_timer_;
+    rclcpp::TimerBase::SharedPtr usv_timer_;
+
 
 };

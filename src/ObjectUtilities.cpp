@@ -56,11 +56,10 @@
         
         return accuracy;
     }
-
  
     bool ObjectUtilities::is_inside_radius(const object_msgs::msg::Object::SharedPtr &object){
         double dist = std::hypot(usv_states_->get_states().x-object->position_x,usv_states_->get_states().y-object->position_y);
-        if(dist > 20.0 or dist <0.5){
+        if( (dist > max_radius_) || (dist < min_radius_) ){
             RCLCPP_INFO(node_->get_logger(),"distance: %.2f",dist);
             return false;
         }
@@ -75,7 +74,7 @@
         while (angle_diff >  M_PI){angle_diff -= 2.0 * M_PI; }
         while (angle_diff < -M_PI){angle_diff += 2.0 * M_PI; }
         
-        if(std::abs(angle_diff*180/M_PI) < 78.0){
+        if(std::abs(angle_diff*180/M_PI) < field_of_view_/2.0){ // divided by two to due to the range being in [-fov,fov]
             RCLCPP_INFO(node_->get_logger(),"Angle: %.2f",angle_diff*180/M_PI);
             return true;
         }

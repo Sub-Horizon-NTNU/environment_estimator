@@ -12,7 +12,10 @@
         marker_timer_ = node_->create_wall_timer(
             std::chrono::milliseconds(10),
             std::bind(&EnvironmentVisualizer::publish_markers, this));
-        
+
+        usv_timer_ = node_->create_wall_timer(
+            std::chrono::milliseconds(50),
+            std::bind(&EnvironmentVisualizer::publish_usv_marker, this));
     }
 
 
@@ -79,7 +82,6 @@
         marker_array.markers.push_back(predicted_marker); 
     }
     marker_publisher_->publish(marker_array);
-    publish_usv_marker();
 }
 
 void EnvironmentVisualizer::publish_usv_marker(){
@@ -91,7 +93,7 @@ void EnvironmentVisualizer::publish_usv_marker(){
     usv_marker.action = visualization_msgs::msg::Marker::ADD;
     usv_marker.color.a = 1.0;
     usv_marker.color.b = 1.0;
-    //usv_marker.pose.orientation = usv_states_->get_states().orientation;
+    usv_marker.pose.orientation = usv_states_->get_orientation();
 
     usv_marker.pose.position.x = usv_states_->get_states().y; // coordinate axis swapped
     usv_marker.pose.position.y = usv_states_->get_states().x;
