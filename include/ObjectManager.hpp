@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Object.hpp"
+#include "StaticObject.hpp"
+#include "DynamicObject.hpp"
+
 #include <USVStates.hpp>
 #include <eigen3/Eigen/Dense>
 #include <object_msgs/msg/object.hpp>
@@ -13,7 +15,7 @@ class ObjectManager {
 public:
   ObjectManager(rclcpp::Node::SharedPtr node, std::shared_ptr<USVStates> usv_states);
 
-  std::vector<Object> get_objects() const;
+  std::vector<std::shared_ptr<Object>> get_objects() const;
 
 private:
 
@@ -31,8 +33,7 @@ private:
   rclcpp::Node::SharedPtr node_;
   std::shared_ptr<USVStates> usv_states_;
   std::unique_ptr<ObjectUtilities> object_utilities_;
-  std::vector<Object> objects_;
-  std::vector<Object> old_objects_;
+  std::vector<std::shared_ptr<Object>> objects_;
 
   static constexpr double radius_ = 1.0;
   rclcpp::Subscription<object_msgs::msg::Object>::SharedPtr object_subscriber_;

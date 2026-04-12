@@ -26,6 +26,8 @@ add_executable(environment_estimator src/main.cpp
   src/USVStates.cpp
   src/EnvironmentVisualizer.cpp
   src/ObjectUtilities.cpp
+  src/StaticObject.cpp
+  src/DynamicObject.cpp
 )
 
 target_include_directories(environment_estimator PRIVATE include)

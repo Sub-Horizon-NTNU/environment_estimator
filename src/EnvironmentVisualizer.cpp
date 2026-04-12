@@ -36,8 +36,8 @@
         marker.type = visualization_msgs::msg::Marker::SPHERE;
         marker.action = visualization_msgs::msg::Marker::ADD;
         
-        marker.pose.position.x = object_manager_->get_objects()[i].get()->position_y; // coordinate axis swapped
-        marker.pose.position.y = object_manager_->get_objects()[i].get()->position_x;
+        marker.pose.position.x = object_manager_->get_objects()[i]->get()->position_y; // coordinate axis swapped
+        marker.pose.position.y = object_manager_->get_objects()[i]->get()->position_x;
         marker.pose.position.z = 0.0;
 
         marker.scale.x = 0.3;
@@ -46,11 +46,11 @@
 
         marker.color.a = 1.0;
         // Set color based on object color string
-        if(object_manager_->get_objects()[i].get()->color[0] == 'r'){
+        if(object_manager_->get_objects()[i]->get()->color[0] == 'r'){
             marker.color.r = 1.0;
-        } else if(object_manager_->get_objects()[i].get()->color[0] == 'g'){
+        } else if(object_manager_->get_objects()[i]->get()->color[0] == 'g'){
             marker.color.g = 1.0;
-        } else if(object_manager_->get_objects()[i].get()->color[0] == 'y'){
+        } else if(object_manager_->get_objects()[i]->get()->color[0] == 'y'){
             marker.color.r = 1.0; marker.color.g = 1.0;
         } else {
             marker.color.r = 1.0; marker.color.g = 1.0; marker.color.b = 1.0;
@@ -58,7 +58,7 @@
 
         marker_array.markers.push_back(marker);
 
-        object_msgs::msg::Object predicted = object_manager_->get_objects()[i].get_predicted_position();
+        object_msgs::msg::Object predicted = object_manager_->get_objects()[i]->get_predicted_position();
         visualization_msgs::msg::Marker predicted_marker;
         predicted_marker.header.frame_id = "map";
         predicted_marker.header.stamp = node_->now();

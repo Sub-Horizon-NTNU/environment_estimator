@@ -1,6 +1,5 @@
 #include "ObjectManager.hpp"
 
-
   ObjectManager::ObjectManager(rclcpp::Node::SharedPtr node, std::shared_ptr<USVStates> usv_states)
       : node_(node), 
         usv_states_(usv_states),
@@ -13,11 +12,10 @@
                     std::placeholders::_1));
   }
 
-  std::vector<Object> ObjectManager::get_objects() const { return objects_; }
+  std::vector<std::shared_ptr<Object>> ObjectManager::get_objects() const { return objects_; }
 
   void ObjectManager::handle_detected_object(const object_msgs::msg::Object::SharedPtr detected_object) {
-    // transform object to world.
-    object_msgs::msg::Object::SharedPtr object_world = object_utilities_->transform_object(detected_object);
+    object_msgs::msg::Object::SharedPtr object_world = object_utilities_->transform_object(detected_object);// transform object to world.
     
     if (objects_.empty()) { // if empty then the first object can just be added, without any checks
       add_object(object_world);
@@ -31,24 +29,27 @@
     //Check if object is in the radius of another object
     for (auto &object : objects_) {
         //Objects previously captured position
-        double x_dist = object_world->position_x - object.get()->position_x;
-        double y_dist = object_world->position_y - object.get()->position_y;
+        double x_dist = object_world->position_x - object->get()->position_x;
+        double y_dist = object_world->position_y - object->get()->position_y;
+
         if (std::hypot(x_dist, y_dist) <= radius_) {				
             object_exists = true;
             break;
         }
 
         //check stored objects predicted position
-        object_msgs::msg::Object pred_object = object.get_predicted_position();
-        double x_dist_pred = object_world->position_x - pred_object.position_x;
-        double y_dist_pred = object_world->position_y - pred_object.position_y;
-        if (std::hypot(x_dist_pred, y_dist_pred) <= radius_*2) {				
-            object_exists = true;
-            break;
+        if(object->get()->type == "dynamic"){
+            object_msgs::msg::Object pred_object = object->get_predicted_position();
+            double x_dist_pred = object_world->position_x - pred_object.position_x;
+            double y_dist_pred = object_world->position_y - pred_object.position_y;
+            if (std::hypot(x_dist_pred, y_dist_pred) <= radius_) {				
+                object_exists = true;
+                break;
+            }
         }
 
         //Check if object should be in sight and if object has been detected
-        if(object_utilities_->should_be_visible(object.get()) && object.get_time_since_updated() > 1.5){
+        if(object_utilities_->should_be_visible(object->get()) && object->get_time_since_updated() > 1.5){
             elements_to_remove.push_back(object_index);
         }
         object_index++;
@@ -62,7 +63,7 @@
         add_object(object_world); 
     } 
 
-    remove_elements(elements_to_remove);  //Removes marked elements in the object_ vector
+    remove_elements(elements_to_remove);  //Removes marked elements in the object_vector
 
     remove_duplicates();
   }
@@ -75,34 +76,38 @@
         RCLCPP_WARN(node_->get_logger(),"ObjectManager buffer exceeded reasonable size, not adding more objects");
         return;
     }
-    //
-    Object new_object(object);
-    objects_.push_back(new_object);
+
+    if(object->type == "static"){
+        objects_.push_back(std::make_shared<StaticObject>(object));
+    }
+    else if(object->type == "dynamic"){
+        objects_.push_back(std::make_shared<DynamicObject>(object));
+    } 
   }
 
   void ObjectManager::update_object(const object_msgs::msg::Object::SharedPtr detected_object, unsigned int index) {
     // Object to be updated
-    Object &object = objects_[index];
-    object.update(detected_object);
+    std::shared_ptr<Object> &object = objects_[index];
+    object->update(detected_object);
 
     //RCLCPP_INFO(node_->get_logger(),"Updated object: %s | pos : [%.2f, %.2f] | vel : [%.4f]",object.get()->color.c_str(), object.get()->position_x, object.get()->position_y, std::hypot(object.get()->velocity_x,object.get()->velocity_y));
   }
 
-  void ObjectManager::remove_elements(std::vector<unsigned int> elements){
-    for(const auto &element : elements){
-        objects_.erase(objects_.begin()+element);
-    }
-  }
-
-  void ObjectManager::remove_duplicates(){
-    for(unsigned int i = 0; i< objects_.size(); i++){
-      for(unsigned int j = i+1; j< objects_.size(); j++){
-        double dist = std::hypot(objects_[i].get()->position_x-objects_[j].get()->position_x, objects_[i].get()->position_y-objects_[j].get()->position_y);
-        if(dist <= radius_){
-            objects_.erase(objects_.begin()+j);
-            j--;
+    void ObjectManager::remove_elements(std::vector<unsigned int> elements){
+        for(const auto &element : elements){
+            objects_.erase(objects_.begin()+element);
         }
-      }
     }
-  }
+
+    void ObjectManager::remove_duplicates(){
+        for(unsigned int i = 0; i< objects_.size(); i++){
+            for(unsigned int j = i+1; j< objects_.size(); j++){
+                double dist = std::hypot(objects_[i]->get()->position_x-objects_[j]->get()->position_x, objects_[i]->get()->position_y-objects_[j]->get()->position_y);
+                if(dist <= radius_){
+                    objects_.erase(objects_.begin()+j);
+                    j--;
+                }
+            }
+        }
+    }
 

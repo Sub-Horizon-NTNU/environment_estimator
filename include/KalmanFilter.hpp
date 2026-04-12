@@ -7,7 +7,11 @@ class KalmanFilter{
     KalmanFilter(const Eigen::VectorXd x, const Eigen::MatrixXd &A,const Eigen::MatrixXd &H,const Eigen::MatrixXd &P);
     
         void update();
+        
+        Eigen::VectorXd get_predicted_state(const Eigen::MatrixXd &A);
+
         void predict();
+
         void correct();
         
         void set_model(const Eigen::MatrixXd &A);

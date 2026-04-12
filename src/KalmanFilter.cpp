@@ -13,14 +13,14 @@
         R_.resize(A.rows(),A.cols());
     }
 
-    
     void KalmanFilter::update(){
-        //TODO ADD dynamically updating const velocity prediction model 
-        //Predict 
         predict();
         correct();
-        
-        //Correct measurement
+    
+    }
+
+    Eigen::VectorXd KalmanFilter::get_predicted_state(const Eigen::MatrixXd &A){
+        return A*x_;
     }
 
     void KalmanFilter::predict(){
