@@ -1,10 +1,10 @@
 #include "DynamicObject.hpp"
 #include <memory>
 
-DynamicObject::DynamicObject(const object_msgs::msg::Object::SharedPtr &object) : 
+DynamicObject::DynamicObject(const object_msgs::msg::Object &object) : 
     Object(object),
-    position_x_(object->position_x),
-    position_y_(object->position_y){
+    position_x_(object.position_x),
+    position_y_(object.position_y){
 
         Eigen::MatrixXd A = Eigen::MatrixXd::Identity(6,6);
         Eigen::MatrixXd H = Eigen::MatrixXd::Zero(4, 6);
@@ -16,7 +16,7 @@ DynamicObject::DynamicObject(const object_msgs::msg::Object::SharedPtr &object) 
         0.0, 0.0, 0.0, 1.0, 0.0, 0.0;
 
         Eigen::VectorXd x(6);
-        x << object->position_x, object->position_y, 0.0, 0.0, 0.0, 0.0; // [px,py,vx,vy,ax,ay]
+        x << object.position_x, object.position_y, 0.0, 0.0, 0.0, 0.0; // [px,py,vx,vy,ax,ay]
 
         Eigen::MatrixXd P = Eigen::MatrixXd::Identity(6,6);
 
@@ -34,7 +34,7 @@ DynamicObject::DynamicObject(const object_msgs::msg::Object::SharedPtr &object) 
         kalman_filter_->set_process_noise_cov(Q);
     }   
 
-void DynamicObject::update(const object_msgs::msg::Object::SharedPtr &object) {
+void DynamicObject::update(const object_msgs::msg::Object &object) {
 
     Eigen::VectorXd z(4);
     Eigen::MatrixXd R(4,4);
@@ -43,10 +43,10 @@ void DynamicObject::update(const object_msgs::msg::Object::SharedPtr &object) {
     std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
 
     double dt = std::chrono::duration<double>(now-prev_time_).count();
-    double velocity_x = (object_->position_x-position_x_)/dt;
-    double velocity_y = (object_->position_y-position_y_)/dt;
+    double velocity_x = (object_.position_x-position_x_)/dt;
+    double velocity_y = (object_.position_y-position_y_)/dt;
     
-    z << object->position_x, object->position_y, velocity_x, velocity_y;
+    z << object.position_x, object.position_y, velocity_x, velocity_y;
 
     A <<
     1.0, 0.0, dt,  0.0,  dt*dt*0.5, 0.0, //px
@@ -68,14 +68,15 @@ void DynamicObject::update(const object_msgs::msg::Object::SharedPtr &object) {
     kalman_filter_->update();
     Eigen::VectorXd estimates = kalman_filter_->get_estimates();
 
-    object_->color = object->color;
-    object_->type = object->type;
-    object_->position_x = estimates(0);
-    object_->position_y = estimates(1);
-    object_->velocity_x = estimates(2);
-    object_->velocity_y = estimates(3);
-    object_->acceleration_x = estimates(4);
-    object_->acceleration_y = estimates(5);
+    object_.color = object.color;
+    object_.type = object.type;
+    object_.position_x = estimates(0);
+    object_.position_y = estimates(1);
+    object_.velocity_x = estimates(2);
+    object_.velocity_y = estimates(3);
+    object_.acceleration_x = estimates(4);
+    object_.acceleration_y = estimates(5);
+    prev_time_ = std::chrono::steady_clock::now();
    
 }
 

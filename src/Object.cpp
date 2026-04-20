@@ -2,7 +2,7 @@
 
 
 
-    Object::Object(const object_msgs::msg::Object::SharedPtr &object)
+    Object::Object(const object_msgs::msg::Object &object)
     : 
     object_(object), 
     prev_time_(std::chrono::steady_clock::now()) {}
@@ -14,7 +14,7 @@
         return dt;
     }
 
-    object_msgs::msg::Object::SharedPtr Object::get() const {
+    object_msgs::msg::Object Object::get() const {
         return object_;
     }
     

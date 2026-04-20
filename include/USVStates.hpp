@@ -18,22 +18,3 @@ struct States {
   double angular_velocity{}; // rad/s
 };
 
-class USVStates {
-public:
-
-  USVStates(rclcpp::Node::SharedPtr node);
-
-  States get_states() const;
-  geometry_msgs::msg::Quaternion get_orientation() const;
-
-private:
-
-  void set_velocity_cb(const geometry_msgs::msg::TwistStamped::SharedPtr twist);
-  void set_pose_cb(const geometry_msgs::msg::PoseStamped::SharedPtr pose);
-
-  States current_states_;
-  rclcpp::Node::SharedPtr node_;
-  geometry_msgs::msg::Quaternion orientation_;
-  rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr position_subscriber_;
-  rclcpp::Subscription<geometry_msgs::msg::TwistStamped>::SharedPtr velocity_subscriber_;
-};

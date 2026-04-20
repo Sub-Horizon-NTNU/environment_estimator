@@ -3,7 +3,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <ObjectManager.hpp>
 #include "EnvironmentVisualizer.hpp"
-#include "USVStates.hpp"
+#include "USVTransformHandler.hpp"
 
 class EnvironmentEstimatorNode : public rclcpp::Node {
 public:
@@ -12,7 +12,7 @@ public:
     void init();
     
 private:
-    std::shared_ptr<USVStates> usv_states_;
+    std::shared_ptr<USVTransformHandler> usv_transform_handler_;
     std::shared_ptr<ObjectManager> object_manager_;
     std::unique_ptr<EnvironmentVisualizer> environment_visualizer_;
 

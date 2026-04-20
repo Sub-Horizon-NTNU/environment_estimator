@@ -8,14 +8,14 @@
 class EnvironmentVisualizer{
     public:
     
-    EnvironmentVisualizer(rclcpp::Node::SharedPtr node,const std::shared_ptr<USVStates> usv_states, const std::shared_ptr<ObjectManager> object_manager);
+    EnvironmentVisualizer(rclcpp::Node::SharedPtr node,const std::shared_ptr<USVTransformHandler> usv_transform_handler, const std::shared_ptr<ObjectManager> object_manager);
 
     void publish_markers();
     void publish_usv_marker();
 
     private:
     rclcpp::Node::SharedPtr node_;
-    std::shared_ptr<USVStates> usv_states_;
+    std::shared_ptr<USVTransformHandler> usv_transform_handler_;
     std::shared_ptr<ObjectManager> object_manager_;
 
     rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr marker_publisher_;

@@ -5,9 +5,9 @@
 
 class DynamicObject : public Object {
     public:
-    DynamicObject(const object_msgs::msg::Object::SharedPtr &object);
+    DynamicObject(const object_msgs::msg::Object &object);
 
-    void update(const object_msgs::msg::Object::SharedPtr &object) override;
+    void update(const object_msgs::msg::Object &object) override;
 
     object_msgs::msg::Object get_predicted_position() override;
 
