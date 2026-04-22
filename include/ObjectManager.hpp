@@ -2,8 +2,6 @@
 
 #include "StaticObject.hpp"
 #include "DynamicObject.hpp"
-
-#include <USVStates.hpp>
 #include <eigen3/Eigen/Dense>
 #include <object_msgs/msg/object.hpp>
 #include <rclcpp/logging.hpp>

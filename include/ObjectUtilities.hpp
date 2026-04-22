@@ -1,6 +1,5 @@
 #pragma once
 #include <memory>
-#include <object_msgs/msg/detail/object__struct.hpp>
 #include <rclcpp/logging.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <object_msgs/msg/object.hpp>

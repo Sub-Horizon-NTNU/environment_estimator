@@ -1,9 +1,6 @@
 
 
 #pragma once
-#include <array>
-#include <geometry_msgs/msg/detail/vector3__struct.hpp>
-#include <geometry_msgs/msg/detail/vector3_stamped__struct.hpp>
 #include <geometry_msgs/msg/pose_stamped.hpp>
 #include <geometry_msgs/msg/twist_stamped.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -28,7 +25,6 @@ class USVTransformHandler{
         get_pose_timer_ = node_->create_wall_timer(
             std::chrono::milliseconds(40),
             std::bind(&USVTransformHandler::update_usv_position, this));
-        pose_.rotation.w = 1.0;  // identity quaternion
 
     }
 
@@ -56,6 +52,7 @@ class USVTransformHandler{
             object.header.stamp = node_->now();
             object.color = object_camera_coordinates.color;
             object.type = object_camera_coordinates.type;
+            object.id = object_camera_coordinates.id;
             object.position_x = world_coordinates.vector.x; // "world_ned" 
             object.position_y = world_coordinates.vector.y; // "world_ned" 
             object.position_z = world_coordinates.vector.z; // "world_ned"   

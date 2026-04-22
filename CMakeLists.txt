@@ -25,7 +25,6 @@ add_executable(environment_estimator src/main.cpp
   src/KalmanFilter.cpp
   src/Object.cpp
   src/ObjectManager.cpp
-  src/USVStates.cpp
   src/EnvironmentVisualizer.cpp
   src/ObjectUtilities.cpp
   src/StaticObject.cpp

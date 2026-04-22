@@ -20,14 +20,10 @@
 
     object_msgs::msg::Object object_world;
 
-    if(true){
-        RCLCPP_INFO(node_->get_logger(),"Heading: %f, size: %ld", usv_transform_handler_->get_heading(), objects_.size());
-    }
-
-    if(true){
+    if(simulator_mode_){
         object_world = object_utilities_->transform_object(detected_object); // transform object to world.
     } else {
-        //object_world = usv_transform_handler_->camera_to_world(detected_object);
+        object_world = usv_transform_handler_->camera_to_world(detected_object);
     }
     
     if (objects_.empty()) { // if empty then the first object can just be added, without any checks
@@ -81,7 +77,7 @@
   }
 
   void ObjectManager::add_object(const object_msgs::msg::Object &object) {
-        RCLCPP_INFO(node_->get_logger(),"Added object: %s | pos : [%.2f, %.2f] | vel : [%.3f, %.3f]", object.type.c_str(), object.position_x, object.position_y, object.velocity_x,object.velocity_y);
+        //RCLCPP_INFO(node_->get_logger(),"Added object: %s | pos : [%.2f, %.2f] | vel : [%.3f, %.3f]", object.type.c_str(), object.position_x, object.position_y, object.velocity_x,object.velocity_y);
 
         // Temp, should be removed when logic/detections are better
         if (objects_.size() > 100) {
@@ -90,7 +86,6 @@
         }
 
         if(object.type == "static"){
-            RCLCPP_INFO(node_->get_logger(), "objects_ size after push: %ld", objects_.size());
             objects_.push_back(std::make_shared<StaticObject>(object));
         }
         else if(object.type == "dynamic"){
