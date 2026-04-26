@@ -13,8 +13,12 @@ class Object {
     virtual void update(const object_msgs::msg::Object &object) = 0;
     
     virtual object_msgs::msg::Object get_predicted_position() = 0;
-    
+
+    virtual object_msgs::msg::Object predict_states(const double &seconds,const double &dt) = 0;
+
     object_msgs::msg::Object get() const;
+
+    void set_id(const int id);
     
     double get_time_since_updated();
     

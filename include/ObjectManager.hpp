@@ -10,6 +10,12 @@
 #include "ObjectUtilities.hpp"
 #include "USVTransformHandler.hpp"
 
+#include <object_msgs/msg/boat.hpp>
+#include <object_msgs/msg/boats.hpp>
+
+#include <object_msgs/msg/buoy.hpp>
+#include <object_msgs/msg/buoys.hpp>
+
 class ObjectManager {
 public:
   ObjectManager(rclcpp::Node::SharedPtr node, std::shared_ptr<USVTransformHandler> usv_transform_handler);
@@ -27,7 +33,8 @@ private:
   void remove_elements(std::vector<unsigned int> elements);
 
   void remove_duplicates();
-
+  
+  void publish_objects();
 
   rclcpp::Node::SharedPtr node_;
   std::shared_ptr<USVTransformHandler> usv_transform_handler_;
@@ -38,5 +45,7 @@ private:
   static constexpr double radius_ = 1.0;
   rclcpp::Subscription<object_msgs::msg::Object>::SharedPtr object_subscriber_;
   rclcpp::TimerBase::SharedPtr update_objects_timer_;
-
+  rclcpp::Publisher<object_msgs::msg::Buoys>::SharedPtr buoy_array_publisher_;
+  rclcpp::Publisher<object_msgs::msg::Boats>::SharedPtr boat_array_publisher_;
+  rclcpp::TimerBase::SharedPtr object_pub_;
 };

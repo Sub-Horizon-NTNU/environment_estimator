@@ -11,6 +11,8 @@ class DynamicObject : public Object {
 
     object_msgs::msg::Object get_predicted_position() override;
 
+    object_msgs::msg::Object predict_states(const double &seconds,const double &dt) override;
+
     private:
         std::shared_ptr<KalmanFilter> kalman_filter_;
         double position_x_{};

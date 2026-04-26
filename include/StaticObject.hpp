@@ -10,6 +10,9 @@ class StaticObject : public Object {
     void update(const object_msgs::msg::Object &object) override;
 
     object_msgs::msg::Object get_predicted_position() override;
+
+    object_msgs::msg::Object predict_states(const double &seconds,const double &timestep) override;
+
     
 
     private:

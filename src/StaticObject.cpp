@@ -59,3 +59,8 @@ object_msgs::msg::Object StaticObject::get_predicted_position(){
     return static_object;
 }
 
+object_msgs::msg::Object StaticObject::predict_states(const double &seconds,const double &dt){
+    return object_;
+}
+
+

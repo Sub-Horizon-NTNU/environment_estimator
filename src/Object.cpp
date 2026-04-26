@@ -17,4 +17,9 @@
     object_msgs::msg::Object Object::get() const {
         return object_;
     }
+
+    void Object::set_id(const int id){
+
+    }
+
     

@@ -1,4 +1,5 @@
 #include "ObjectManager.hpp"
+#include <rclcpp/qos.hpp>
 
   ObjectManager::ObjectManager(rclcpp::Node::SharedPtr node, std::shared_ptr<USVTransformHandler> usv_transform_handler)
       : node_(node), 
@@ -9,6 +10,20 @@
         object_subscriber_ = node_->create_subscription<object_msgs::msg::Object>(
             "selene/object_detector/object", 10,
             std::bind(&ObjectManager::handle_detected_object, this,std::placeholders::_1));
+
+        buoy_array_publisher_ = node_->create_publisher<object_msgs::msg::Buoys>(
+            "selene/environment_estimator/buoys",
+            10
+        );
+
+        boat_array_publisher_ = node_->create_publisher<object_msgs::msg::Boats>(
+            "selene/environment_estimator/boats",
+            10
+        );
+
+        object_pub_ = node_->create_wall_timer(
+            std::chrono::seconds(1),
+            std::bind(&ObjectManager::publish_objects, this));
 
         node_->declare_parameter("simulator_mode",false);
         simulator_mode_ = node_->get_parameter("simulator_mode").as_bool();
@@ -55,7 +70,6 @@
                 break;
             }
         }
-
         //Check if object should be in sight and if object has been detected
         if(object_utilities_->should_be_visible(object->get()) && object->get_time_since_updated() > 1.5){
             elements_to_remove.push_back(object_index);
@@ -78,13 +92,6 @@
 
   void ObjectManager::add_object(const object_msgs::msg::Object &object) {
         //RCLCPP_INFO(node_->get_logger(),"Added object: %s | pos : [%.2f, %.2f] | vel : [%.3f, %.3f]", object.type.c_str(), object.position_x, object.position_y, object.velocity_x,object.velocity_y);
-
-        // Temp, should be removed when logic/detections are better
-        if (objects_.size() > 100) {
-            RCLCPP_WARN(node_->get_logger(),"ObjectManager buffer exceeded reasonable size, not adding more objects");
-            //return;
-        }
-
         if(object.type == "static"){
             objects_.push_back(std::make_shared<StaticObject>(object));
         }
@@ -117,5 +124,45 @@
                 }
             }
         }
+    }
+
+    void ObjectManager::publish_objects(){
+
+        object_msgs::msg::Boats boats;
+        object_msgs::msg::Buoys buoys;
+
+        for(const auto &object: objects_){
+            if(object->get().type == "dynamic"){
+                object_msgs::msg::Boat boat;
+
+                boat.pos_x = object->get().position_x;
+                boat.pos_y = object->get().position_y;
+                boat.velocity_x = object->get().velocity_x;
+                boat.velocity_y = object->get().velocity_y;
+                boat.acceleration_x = object->get().acceleration_x;
+                boat.acceleration_y = object->get().acceleration_y;
+                boat.id = object->get().id;
+                boat.color = object->get().color;
+                boat.type = "unknown";
+
+                boats.boats.push_back(boat);
+            }
+
+            if(object->get().type == "static"){
+                object_msgs::msg::Buoy buoy;
+                buoy.x = object->get().position_x;
+                buoy.y = object->get().position_y;
+                buoy.color = object->get().color;
+                buoy.id = object->get().id;
+            }
+        }
+
+        if(boats.boats.size()>0){
+            boat_array_publisher_->publish(boats);
+        }
+        if(buoys.buoys.size()>0){
+            buoy_array_publisher_->publish(buoys);
+        }
+
     }
 
