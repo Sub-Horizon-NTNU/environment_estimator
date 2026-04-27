@@ -1,4 +1,5 @@
 #include "ObjectManager.hpp"
+#include <chrono>
 #include <rclcpp/qos.hpp>
 
   ObjectManager::ObjectManager(rclcpp::Node::SharedPtr node, std::shared_ptr<USVTransformHandler> usv_transform_handler)
@@ -22,7 +23,7 @@
         );
 
         object_pub_ = node_->create_wall_timer(
-            std::chrono::seconds(1),
+            std::chrono::milliseconds(600),
             std::bind(&ObjectManager::publish_objects, this));
 
         node_->declare_parameter("simulator_mode",false);
@@ -154,6 +155,7 @@
                 buoy.y = object->get().position_y;
                 buoy.color = object->get().color;
                 buoy.id = object->get().id;
+                buoys.buoys.push_back(buoy);
             }
         }
 
