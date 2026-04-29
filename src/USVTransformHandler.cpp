@@ -21,19 +21,22 @@
         //Tranforms vector in the camera reference frame to world NED.
 
         object_msgs::msg::Object object;
-        geometry_msgs::msg::Vector3Stamped camera_coordinates;
-        geometry_msgs::msg::Vector3Stamped world_coordinates;
+        geometry_msgs::msg::PointStamped camera_coordinates;
+        geometry_msgs::msg::PointStamped world_coordinates;
         camera_coordinates.header.stamp = object_camera_coordinates.header.stamp;
         camera_coordinates.header.frame_id = "camera"; //object_camera_coordinates.header; // frame and time, camera frame is called "camera"
-        camera_coordinates.vector.x = object_camera_coordinates.position_x;
-        camera_coordinates.vector.y = object_camera_coordinates.position_y;
-        camera_coordinates.vector.z = object_camera_coordinates.position_z;
+        camera_coordinates.point.x = object_camera_coordinates.position_x;
+        camera_coordinates.point.y = object_camera_coordinates.position_y;
+        camera_coordinates.point.z = object_camera_coordinates.position_z;
         try {
+            //auto t = tf_buffer_->lookupTransform("world_ned", "usv_ned", tf2::TimePointZero);
+            //RCLCPP_INFO(node_->get_logger(), "usv pos in world: %.2f %.2f %.2f",
+            //    t.transform.translation.x,
+            //    t.transform.translation.y,
+            //    t.transform.translation.z);
             tf_buffer_->transform(
                 camera_coordinates,
                 world_coordinates, 
-                "world_ned",
-                tf2_ros::fromMsg(camera_coordinates.header.stamp), 
                 "world_ned",
                 tf2::durationFromSec(0.1)
             );
@@ -42,11 +45,11 @@
             object.color = object_camera_coordinates.color;
             object.type = object_camera_coordinates.type;
             object.id = object_camera_coordinates.id;
-            object.position_x = world_coordinates.vector.x; // "world_ned" 
-            object.position_y = world_coordinates.vector.y; // "world_ned" 
-            object.position_z = world_coordinates.vector.z; // "world_ned"   
+            object.position_x = world_coordinates.point.x; // "world_ned" 
+            object.position_y = world_coordinates.point.y; // "world_ned" 
+            object.position_z = world_coordinates.point.z; // "world_ned"   
             return object;
-            }
+        }
         catch(const tf2::TransformException &tf_ex){
             RCLCPP_WARN(node_->get_logger(),"Failure when performing trasnform: %s",tf_ex.what());
             return object;
