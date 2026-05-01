@@ -81,6 +81,7 @@ void DynamicObject::update(const object_msgs::msg::Object &object) {
     object_.acceleration_x = estimates(4);
     object_.acceleration_y = estimates(5);
     prev_time_ = now;
+    times_detected_++;
    
 }
 

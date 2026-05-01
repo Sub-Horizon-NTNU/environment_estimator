@@ -133,9 +133,12 @@
         object_msgs::msg::Buoys buoys;
 
         for(const auto &object: objects_){
+            if (object->get_times_detected() <=10){ 
+                return;
+            }
+            
             if(object->get().type == "dynamic"){
                 object_msgs::msg::Boat boat;
-
                 boat.pos_x = object->get().position_x;
                 boat.pos_y = object->get().position_y;
                 boat.velocity_x = object->get().velocity_x;
@@ -145,8 +148,8 @@
                 boat.id = object->get().id;
                 boat.color = object->get().color;
                 boat.type = "unknown";
-
                 boats.boats.push_back(boat);
+
             }
 
             if(object->get().type == "static"){

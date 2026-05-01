@@ -17,6 +17,9 @@
     object_msgs::msg::Object Object::get() const {
         return object_;
     }
+    unsigned int Object::get_times_detected() const {
+        return times_detected_;
+    }
 
     void Object::set_id(const int id){
 

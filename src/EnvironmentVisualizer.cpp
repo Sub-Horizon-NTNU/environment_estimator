@@ -98,7 +98,7 @@ void EnvironmentVisualizer::publish_usv_marker(){
 
     usv_marker.pose.position.x = usv_transform_handler_->get_usv_position().translation.x; // coordinate axis swapped
     usv_marker.pose.position.y = usv_transform_handler_->get_usv_position().translation.y;
-    usv_marker.pose.position.z = usv_transform_handler_->get_usv_position().translation.z;
+    usv_marker.pose.position.z = 0.0;
     usv_marker.scale.x = 1.0;
     usv_marker.scale.y = 0.8;
     usv_marker.scale.z = 0.5;
