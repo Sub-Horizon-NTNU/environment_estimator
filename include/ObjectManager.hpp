@@ -7,6 +7,7 @@
 #include <rclcpp/logging.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <visualization_msgs/msg/marker_array.hpp>
+#include <std_msgs/msg/bool.hpp>
 #include "ObjectUtilities.hpp"
 #include "USVTransformHandler.hpp"
 
@@ -34,6 +35,8 @@ private:
 
   void remove_duplicates();
   
+  void clear_objects();
+  
   void publish_objects();
 
   rclcpp::Node::SharedPtr node_;
@@ -47,5 +50,7 @@ private:
   rclcpp::TimerBase::SharedPtr update_objects_timer_;
   rclcpp::Publisher<object_msgs::msg::Buoys>::SharedPtr buoy_array_publisher_;
   rclcpp::Publisher<object_msgs::msg::Boats>::SharedPtr boat_array_publisher_;
+  rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr clear_objects_subscriber_;
+
   rclcpp::TimerBase::SharedPtr object_pub_;
 };

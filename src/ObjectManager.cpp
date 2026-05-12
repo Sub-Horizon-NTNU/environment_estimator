@@ -1,4 +1,5 @@
 #include "ObjectManager.hpp"
+#include "Object.hpp"
 #include <chrono>
 #include <rclcpp/qos.hpp>
 
@@ -21,6 +22,15 @@
             "selene/environment_estimator/boats",
             10
         );
+
+        clear_objects_subscriber_ = node_->create_subscription<std_msgs::msg::Bool>(
+            "selene/environment_estimator/clear",
+            rclcpp::QoS(10).transient_local().reliable(),
+            [this](const std_msgs::msg::Bool){ 
+                RCLCPP_INFO(node_->get_logger(), "Objects cleared");
+                clear_objects();
+        });
+        
 
         object_pub_ = node_->create_wall_timer(
             std::chrono::milliseconds(600),
@@ -101,6 +111,8 @@
         } 
     }
 
+
+
   void ObjectManager::update_object(const object_msgs::msg::Object detected_object, unsigned int index) {
     // Object to be updated
     std::shared_ptr<Object> &object = objects_[index];
@@ -110,8 +122,10 @@
   }
 
     void ObjectManager::remove_elements(std::vector<unsigned int> elements){
+        unsigned int objects_removed{};
         for(const auto &element : elements){
-            objects_.erase(objects_.begin()+element);
+            objects_.erase(objects_.begin()+element-objects_removed);
+            objects_removed++;
         }
     }
 
@@ -125,6 +139,10 @@
                 }
             }
         }
+    }
+    void ObjectManager::clear_objects(){
+        objects_.clear();
+        objects_.shrink_to_fit();
     }
 
     void ObjectManager::publish_objects(){

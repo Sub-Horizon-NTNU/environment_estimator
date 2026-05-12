@@ -18,6 +18,7 @@ find_package(eigen3_cmake_module REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
+find_package(std_msgs REQUIRED)
 
 
 add_executable(environment_estimator src/main.cpp
@@ -43,6 +44,7 @@ ament_target_dependencies(environment_estimator
   geometry_msgs
   visualization_msgs
   tf2_ros
+  std_msgs
 )
 
 install(TARGETS environment_estimator

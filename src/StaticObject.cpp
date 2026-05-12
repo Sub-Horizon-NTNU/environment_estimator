@@ -3,6 +3,8 @@
 StaticObject::StaticObject(const object_msgs::msg::Object &object) : 
     Object(object){
 
+        object_.confidence += object.confidence/static_cast<double>(times_detected_);
+        
         Eigen::Matrix2d A;
         A <<
         1.0, 0.0,

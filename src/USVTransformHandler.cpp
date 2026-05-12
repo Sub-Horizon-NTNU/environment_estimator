@@ -34,6 +34,8 @@
             //    t.transform.translation.x,
             //    t.transform.translation.y,
             //    t.transform.translation.z);
+
+          
             tf_buffer_->transform(
                 camera_coordinates,
                 world_coordinates, 
