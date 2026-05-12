@@ -5,9 +5,9 @@
     node_(node),
     usv_transform_handler_(usv_transform_handler)
     {
-        node->declare_parameter<double>("field_of_view", 78.0);
+        node->declare_parameter<double>("field_of_view", 72.0);
         node->declare_parameter<double>("max_radius", 20.0);
-        node->declare_parameter<double>("min_radius", 1.0);
+        node->declare_parameter<double>("min_radius", 0.75);
 
         field_of_view_ = node_->get_parameter("field_of_view").as_double();
         max_radius_ = node_->get_parameter("max_radius").as_double();

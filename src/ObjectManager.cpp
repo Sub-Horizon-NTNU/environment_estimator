@@ -31,7 +31,6 @@
                 clear_objects();
         });
         
-
         object_pub_ = node_->create_wall_timer(
             std::chrono::milliseconds(600),
             std::bind(&ObjectManager::publish_objects, this));
