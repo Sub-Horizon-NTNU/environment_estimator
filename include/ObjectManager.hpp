@@ -41,7 +41,7 @@ private:
 
   rclcpp::Node::SharedPtr node_;
   std::shared_ptr<USVTransformHandler> usv_transform_handler_;
-  std::unique_ptr<ObjectUtilities> object_utilities_;
+  std::unique_ptr<ObjectUtilities> object_utilities_{};
   std::vector<std::shared_ptr<Object>> objects_;
   bool simulator_mode_;
 

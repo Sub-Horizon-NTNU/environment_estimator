@@ -141,7 +141,6 @@
     }
     void ObjectManager::clear_objects(){
         objects_.clear();
-        objects_.shrink_to_fit();
     }
 
     void ObjectManager::publish_objects(){

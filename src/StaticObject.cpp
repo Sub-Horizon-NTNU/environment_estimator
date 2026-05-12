@@ -3,7 +3,7 @@
 StaticObject::StaticObject(const object_msgs::msg::Object &object) : 
     Object(object){
 
-        object_.confidence += object_.confidence + (object_.confidence - object.confidence)/static_cast<double>(times_detected_);
+        //object_.confidence += object_.confidence + (object_.confidence - object.confidence)/static_cast<double>(times_detected_);
         
         Eigen::Matrix2d A;
         A <<
@@ -27,7 +27,7 @@ StaticObject::StaticObject(const object_msgs::msg::Object &object) :
         0.2, 0.0,
         0.0, 0.2;
         kalman_filter_->set_process_noise_cov(Q);
-        times_detected_++;
+        times_detected_ = 1;
     }   
 
 void StaticObject::update(const object_msgs::msg::Object &object) {

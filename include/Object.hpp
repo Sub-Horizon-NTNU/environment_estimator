@@ -28,5 +28,5 @@ class Object {
     protected:
     object_msgs::msg::Object object_;
     std::chrono::steady_clock::time_point prev_time_;
-    unsigned int times_detected_;
+    unsigned int times_detected_{};
 };

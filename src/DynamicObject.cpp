@@ -34,6 +34,7 @@ DynamicObject::DynamicObject(const object_msgs::msg::Object &object) :
         0.0, 0.0, 0.0, 0.0, 0.0, 0.03;
 
         kalman_filter_->set_process_noise_cov(Q);
+        times_detected_ = 1;
     }   
 
 void DynamicObject::update(const object_msgs::msg::Object &object) {
