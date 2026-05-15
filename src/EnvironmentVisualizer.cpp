@@ -10,11 +10,11 @@
                     "selene/environment_estimator/usv_marker", 10);
 
         marker_timer_ = node_->create_wall_timer(
-            std::chrono::milliseconds(50),
+            std::chrono::milliseconds(500),
             std::bind(&EnvironmentVisualizer::publish_markers, this));
 
         usv_timer_ = node_->create_wall_timer(
-            std::chrono::milliseconds(100),
+            std::chrono::milliseconds(500),
             std::bind(&EnvironmentVisualizer::publish_usv_marker, this));
     }
 

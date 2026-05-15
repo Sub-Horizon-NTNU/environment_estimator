@@ -37,6 +37,8 @@
 
         node_->declare_parameter("simulator_mode",false);
         simulator_mode_ = node_->get_parameter("simulator_mode").as_bool();
+        RCLCPP_INFO(node_->get_logger(),"Environment estimator started");
+
   }
 
   std::vector<std::shared_ptr<Object>> ObjectManager::get_objects() const { return objects_; }

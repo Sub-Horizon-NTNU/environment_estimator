@@ -59,24 +59,24 @@
     //}
  
     bool ObjectUtilities::is_inside_radius(const object_msgs::msg::Object &object){
-        double dist = std::hypot(usv_transform_handler_->get_usv_position().translation.x-object.position_x,usv_transform_handler_->get_usv_position().translation.y-object.position_y);
+        double dist = std::hypot(          usv_transform_handler_->get_usv_position().translation.x - object.position_x      ,   usv_transform_handler_->get_usv_position().translation.y - object.position_y      );
         if( (dist > max_radius_) || (dist < min_radius_) ){
-            //RCLCPP_INFO(node_->get_logger(),"distance: %.2f",dist);
-            return false;
+            //RCLCPP_INFO(node_->get_logger(),"distance: %.2f",dist);            return false;
         }
         return true;
     }
 
     bool ObjectUtilities::is_inside_fov(const object_msgs::msg::Object &object){
-        double x_diff = object.position_x- usv_transform_handler_->get_usv_position().translation.x;
-        double y_diff = object.position_y- usv_transform_handler_->get_usv_position().translation.y;
+        double x_diff = object.position_x - usv_transform_handler_->get_usv_position().translation.x;
+        double y_diff = object.position_y - usv_transform_handler_->get_usv_position().translation.y;
 
-        double angle_diff = usv_transform_handler_->get_heading()-std::atan2(y_diff,x_diff);
+        double angle_diff = std::atan2(y_diff,x_diff) - usv_transform_handler_->get_heading();
+
         while (angle_diff >  M_PI){angle_diff -= 2.0 * M_PI; }
         while (angle_diff < -M_PI){angle_diff += 2.0 * M_PI; }
+        //RCLCPP_INFO(node_->get_logger(),"Angle: %.2f",angle_diff*180/M_PI);
         
-        if(std::abs(angle_diff*180/M_PI) < field_of_view_/2.0){ // divided by two to due to the range being in [-fov,fov]
-            //RCLCPP_INFO(node_->get_logger(),"Angle: %.2f",angle_diff*180/M_PI);
+        if(std::abs(angle_diff*180.0/M_PI) < field_of_view_/2.0){ // divided by two to due to the range being in [-fov,fov]
             return true;
         }
 
